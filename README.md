@@ -90,7 +90,9 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+select company_name
+from suppliers
+where length(company_name) > 20
 ```
 
 * [ ] ***find all customers that include the word 'MARKET' in the contact title. Should return 19 records***
@@ -103,7 +105,9 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+select *
+from customers
+where upper(contact_title) like '%MARKET%'
 ```
 
 * [ ] ***add a customer record for***
@@ -120,7 +124,8 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+insert into customers (customer_id, company_name, contact_name, address, city, postal_code, country)
+values ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit-Hole', 'Bag End', '111', 'Middle Earth')
 ```
 
 * [ ] ***update _Bilbo Baggins_ record so that the postal code changes to _"11122"_***
@@ -131,7 +136,9 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+update customers
+set postal_code = '11122'
+where contact_name = 'Bilbo Baggins'
 ```
 
 * [ ] ***list orders grouped and ordered by customer company name showing the number of orders per customer company name. _Rattlesnake Canyon Grocery_ should have 18 orders***
@@ -143,7 +150,11 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+select c.company_name, count(*)
+from orders o join customers c
+on o.customer_id = c.customer_id
+group by c.company_name
+order by c.company_name
 ```
 
 * [ ] ***list customers by contact name and the number of orders per contact name. Sort the list by the number of orders in descending order. _Jose Pavarotti_ should be at the top with 31 orders followed by _Roland Mendal_ with 30 orders. Last should be _Francisco Chang_ with 1 order***
@@ -154,7 +165,11 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+select c.contact_name, count(o.order_id) as orders
+from orders o join customers c
+on o.customer_id = c.customer_id
+group by c.contact_name
+order by orders desc
 ```
 
 * [ ] ***list orders grouped by customer's city showing the number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders***
@@ -165,7 +180,11 @@ order by order_date DESC
   </details>
 
 ```SQL
-
+select c.city as CITY, count(*) as TOTAL
+from orders o join customers c
+on o.customer_id = c.customer_id
+group by c.city
+order by CITY
 ```
 
 ## Data Normalization
@@ -187,39 +206,41 @@ Below are some empty tables to be used to normalize the database
 
 Table Name:
 
+Table Name: Persons
+
+|   Person Id|     name   | Fenced Yard|City Dweller|            |            |            |            |
+|------------|------------|------------|------------|------------|------------|------------|------------|
+|     1      |    Jane    |    No      |   Yes      |            |            |            |            |
+|     2      |    Bob     |    No      |   No       |            |            |            |            |
+|     3      |    Sam     |   Yes      |   No       |            |            |            |            |
 |            |            |            |            |            |            |            |            |            |
+|            |            |            |            |            |            |            |            |            |
+|            |            |            |            |            |            |            |            |            |
+|            |            |            |            |            |            |            |            |            |
+
+Table Name: Pet Types
+
+|   Type Id  |      Type  |            |            |            |            |            |            |            |
 |------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+|     1      |     Dog    |            |            |            |            |            |            |            |
+|     2      |     Horse  |            |            |            |            |            |            |            |
+|     3      |     Cat    |            |            |            |            |            |            |            |
+|     4      |     Turtle |            |            |            |            |            |            |            |
+|     5      |     Fish   |            |            |            |            |            |            |            |
 |            |            |            |            |            |            |            |            |            |
 |            |            |            |            |            |            |            |            |            |
 
-Table Name:
+Table Name: Pets
 
-|            |            |            |            |            |            |            |            |            |
+|      id    |      name  |   Type Id  |            |            |            |            |            |            |
 |------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-
-Table Name:
-
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+|      1     |    Ellie   |      1     |            |            |            |            |            |            |
+|      2     |     Joe    |      2     |            |            |            |            |            |            |
+|      3     |   Ginger   |      1     |            |            |            |            |            |            |
+|      4     |   Tiger    |      3     |            |            |            |            |            |            |
+|      5     | Miss Kitty |      3     |            |            |            |            |            |            |
+|      6     |  Toby      |      4     |            |            |            |            |            |            |
+|      7     |    Bubble  |      5     |            |            |            |            |            |            |
 
 Table Name:
 
